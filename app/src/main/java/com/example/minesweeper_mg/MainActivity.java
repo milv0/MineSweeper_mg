@@ -2,7 +2,9 @@ package com.example.minesweeper_mg;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -32,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
                 tableRow.addView(buttons[i][j]);
             }
         }
+    }
+
+    public void onClick(View v){
+        Intent intent = new Intent(getApplicationContext(), newActivity.class);
+        startActivity(intent);
     }
 
 
