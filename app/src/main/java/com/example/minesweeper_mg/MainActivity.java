@@ -21,14 +21,14 @@ public class MainActivity extends AppCompatActivity {
         // 테이블 레이아웃 9x9
         table = (TableLayout) findViewById(R.id.tableLayout);
 
-        Button[][] buttons = new Button[9][9];
+        BlockButton[][] buttons = new BlockButton[9][9];
         for (int i = 0; i < 9; i++) {
             TableRow tableRow = new TableRow(this);
             tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
             table.addView(tableRow);
 
             for (int j = 0; j < 9; j++) {
-                buttons[i][j] = new Button(this);
+                buttons[i][j] = new BlockButton(this,i,j);
                 TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1.0f);
                 buttons[i][j].setLayoutParams(layoutParams);
                 tableRow.addView(buttons[i][j]);
