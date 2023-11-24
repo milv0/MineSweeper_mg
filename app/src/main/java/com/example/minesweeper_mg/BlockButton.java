@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.appcompat.widget.AppCompatButton;
@@ -28,6 +29,7 @@ public class BlockButton extends AppCompatButton {
         return blocks_num;
     }
 
+
     public BlockButton(Context context, int x, int y) {
         super(context);
 
@@ -44,51 +46,48 @@ public class BlockButton extends AppCompatButton {
     }
 
     public void checkBlock(){
+        flag = false;
+        flags_num--;
         if (!check) {
             check = true;
-//            flags_num++;
+            setTextColor(Color.BLACK);
             setText("V");
-            if(mine){
-                setTextColor(Color.RED);
-                setText("!M!");
-            }
         } else {
             check = false;
-//            flags_num--;
             setText("");
-            if(mine){
-                setTextColor(Color.RED);
-                setText("!M!");
-            }
         }
     }
     public void breakBlock(){
         setEnabled(false);
         setText("Bk");
         check = false;
+        if(mine){
+            setTextColor(Color.RED);
+            setText("!M!");
+        }else{
+            int neighbor = getNeighborMines();
+            setText(Integer.toString(neighbor));
+        }
 
     }
     public void toggleFlag() {
-        if (!flag) {
-            flag = true;
-            flags_num++;
-            setText("F");
-            setTextColor(Color.RED);
-            setEnabled(false);
-            check = false;
-        } else {
-            flag = false;
-            flags_num--;
-            setText("");
-            setEnabled(false);
-            check = false;
+        flag = true;
+        flags_num++;
+        setText("F");
+        setTextColor(Color.RED);
+        check = false;
 
-        }
     }
-
+    public int getNeighborMines() {
+        return neighborMines;
+    }
+    public void setNeighborMines(int nm){
+        neighborMines = nm;
+    }
     public void setMine(boolean b) {
         mine = b;
     }
+
     public void showAllMines(){
         setText("!M!");
     }

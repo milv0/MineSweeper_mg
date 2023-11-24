@@ -55,8 +55,25 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
-
+        // 지뢰 세팅
         setMines(buttons);
+        calculateMineCounts(buttons);
+
+        ToggleButton showAllMines = (ToggleButton)findViewById(R.id.show_mine);
+        showAllMines.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (((ToggleButton) view).isChecked()) {
+                    for (int i = 0; i < 9; i++) {
+                        for (int j = 0; j < 9; j++) {
+                            buttons[i][j].performClick();
+                        }
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "zzzz", Toast.LENGTH_SHORT).show();
+//                    setMines(buttons);
+                }
+            }
+        });
 
         blocks_num.setText("Blocks : " + getBlocks_num()); // Blocks 총 개수
 
@@ -93,6 +110,32 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void calculateMineCounts(BlockButton[][ ] buttons) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                // If the current cell has a mine, set mine count to -1
+                int[][] mineCounts = new int[9][9];
+                if (buttons[row][col].isMine()) {
+                    mineCounts[row][col] = -1;
+                    buttons[row][col].setNeighborMines(mineCounts[row][col]);
+                    continue;
+                }
+                // Count mines in the neighboring cells
+                int count = 0;
+                for (int i = row - 1; i <= row + 1; i++) {
+                    for (int j = col - 1; j <= col + 1; j++) {
+                        if (i >= 0 && i < 9 && j >= 0 && j < 9 && buttons[i][j].isMine()) {
+                            count++;
+                        }
+                    }
+                }
+                mineCounts[row][col] = count;
+                buttons[row][col].setNeighborMines(mineCounts[row][col]);
+            }
+        }
+    }
+
 
     // 선택한 블럭 Break
     private void breakSelectedBlock() {
@@ -131,5 +174,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }
