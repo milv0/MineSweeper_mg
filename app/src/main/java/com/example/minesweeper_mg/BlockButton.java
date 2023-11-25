@@ -21,13 +21,7 @@ public class BlockButton extends AppCompatButton {
 
     private static int flags_num;
     private static int blocks_num;
-    public static int getFlags_num() {
-        return flags_num;     // block 클릭 시 화면 상단에 Flag 개수 띄우기
-    }
-
-    public static int getBlocks_num() {
-        return blocks_num;
-    }
+    private static int mines_num = 10;
 
 
     public BlockButton(Context context, int x, int y) {
@@ -47,7 +41,7 @@ public class BlockButton extends AppCompatButton {
 
     public void checkBlock(){
         flag = false;
-        flags_num--;
+
         if (!check) {
             check = true;
             setTextColor(Color.BLACK);
@@ -61,6 +55,7 @@ public class BlockButton extends AppCompatButton {
         setEnabled(false);
         setText("Bk");
         check = false;
+
         if(mine){
             setTextColor(Color.RED);
             setText("!M!");
@@ -76,22 +71,44 @@ public class BlockButton extends AppCompatButton {
         setText("F");
         setTextColor(Color.RED);
         check = false;
-
     }
+
+    public void calculate_mines(){
+       mines_num--;
+    }
+
+
+
+
+    // Getter
     public int getNeighborMines() {
         return neighborMines;
     }
+
+    public static int getFlags_num() {
+        return flags_num;     // block 클릭 시 화면 상단에 Flag 개수 띄우기
+    }
+
+    public static int getBlocks_num() {
+        return blocks_num;
+    }
+
+    public static int getMines_num(){ return mines_num;}
+
+    // Setter
+    public static void setFlags_num(int flags_num) {BlockButton.flags_num = flags_num;}
+
+    public static void setBlocks_num(int blocks_num) {BlockButton.blocks_num = blocks_num;}
+
     public void setNeighborMines(int nm){
         neighborMines = nm;
     }
+
     public void setMine(boolean b) {
         mine = b;
     }
 
-    public void showAllMines(){
-        setText("!M!");
-    }
-
+    //
     public boolean blockChecked() {
         return check;
     }
@@ -101,7 +118,5 @@ public class BlockButton extends AppCompatButton {
     public  boolean isMine(){
         return mine;
     }
-
-
 
 }

@@ -2,11 +2,13 @@ package com.example.minesweeper_mg;
 
 import static com.example.minesweeper_mg.BlockButton.getFlags_num;
 import static com.example.minesweeper_mg.BlockButton.getBlocks_num;
+import static com.example.minesweeper_mg.BlockButton.getMines_num;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -21,14 +23,28 @@ public class MainActivity extends AppCompatActivity {
 
     private TableLayout table;
     private  TextView blocks_num;
+    private TextView all_mines_num;
     private BlockButton[][] buttons;
+    private long startTime; // 실행 시간
+    private TextView runTime; // 실행 시간
+    private Handler handler; // 실행 시간
+
+    private Button simpleBreakButton;
+    private Button simpleFlagButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Mine 다 보이기
+        runTime = (TextView)findViewById(R.id.runTimeText);
+        handler = new Handler();
+        startTime = System.currentTimeMillis();
+        handler.postDelayed(calculateTime, 1000);
+
+        all_mines_num = (TextView)findViewById(R.id.mine_num_text);
+        all_mines_num.setText("Mines : " + getMines_num());
+
 
         // 테이블 레이아웃 9x9
         table = (TableLayout) findViewById(R.id.tableLayout);
@@ -60,6 +76,26 @@ public class MainActivity extends AppCompatActivity {
         setMines(buttons);
         calculateMineCounts(buttons);
 
+        // 테스트 위해  버튼 두개 분리
+        simpleBreakButton = (Button)findViewById(R.id.simple_break);
+        simpleFlagButton = (Button)findViewById(R.id.simple_flag);
+        simpleBreakButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                breakSelectedBlock();
+                blocks_num.setText("Blocks : "+ getBlocks_num());
+            }
+        });
+        simpleFlagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flagSelectedBlock();
+                TextView textView = (TextView) findViewById(R.id.flags_num);
+                textView.setText("Flags : " + getFlags_num());
+            }
+        });
+
+        // Mine 정답 확인 / Reset Toggle 버튼
         ToggleButton showAllMines = (ToggleButton)findViewById(R.id.show_mine);
         showAllMines.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -69,9 +105,16 @@ public class MainActivity extends AppCompatActivity {
                             buttons[i][j].performClick();
                         }
                     }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            breakSelectedBlock();
+                        }
+                    }, 200);
                 } else {
-                    Toast.makeText(MainActivity.this, "zzzz", Toast.LENGTH_SHORT).show();
-//                    setMines(buttons);
+                    Toast.makeText(MainActivity.this, "Restart!", Toast.LENGTH_SHORT).show();
+                    restartApp();
+
                 }
             }
         });
@@ -88,8 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     blocks_num.setText("Blocks : "+ getBlocks_num());
                 } else {
                     flagSelectedBlock();
-//                    ((BlockButton) view).toggleFlag();
-                    TextView textView = (TextView) findViewById(R.id.flags_num); // Block 클릭 시 # 보이기
+                    TextView textView = (TextView) findViewById(R.id.flags_num);
                     textView.setText("Flags : " + getFlags_num()); // Block 클릭 시 Flag 개수 BlockButon.java에서 가져오기
                 }
             }
@@ -138,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     // 선택한 블럭 Break
     private void breakSelectedBlock() {
         for (int i = 0; i < table.getChildCount(); i++) {
@@ -150,7 +191,10 @@ public class MainActivity extends AppCompatActivity {
                     if (blockView instanceof BlockButton) {
                         BlockButton selectedBlock = (BlockButton) blockView;
                         if (selectedBlock.blockChecked()) {
-                            selectedBlock.breakBlock();
+                            selectedBlock.breakBlock(); // BlockButton.java -> breakBlock()
+                            if(selectedBlock.isMine()){
+                                Toast.makeText(this, "Game Over...", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
@@ -169,11 +213,49 @@ public class MainActivity extends AppCompatActivity {
                     if (blockView instanceof BlockButton) {
                         BlockButton selectedBlock = (BlockButton) blockView;
                         if (selectedBlock.blockChecked()) {
-                            selectedBlock.toggleFlag();
+                            selectedBlock.toggleFlag(); // BlockButton.java -> toggleFlag()
+                            if(selectedBlock.isMine()){
+                                selectedBlock.calculate_mines(); // Flag 선택한 블럭이 Mine일 때 Mine 총 개수 줄이기
+                                all_mines_num.setText("Mines : " + getMines_num());
+
+                                if(getMines_num() == 0){  // Mine에 모두 10개 Flag 선택 시 종료 Toast
+                                    Toast.makeText(this, "Great!!!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    // App 재시작 및 Mine 재배치
+    private void restartApp() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+        BlockButton.setBlocks_num(0);
+        BlockButton.setFlags_num(0);
+    }
+
+    // 시간 측정
+    private Runnable calculateTime = new Runnable() {
+        @Override
+        public void run() {
+            // 현재 시간과 시작 시간 간의 차이를 계산
+            long currentTime = System.currentTimeMillis();
+            long executionTime = (currentTime - startTime) / 1000;
+
+            // TextView 업데이트
+            runTime.setText("Time : " + executionTime);
+
+            // 1초마다 실행
+            handler.postDelayed(this, 1000);
+        }
+    };
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(calculateTime);
     }
 }
