@@ -3,6 +3,7 @@ package com.example.minesweeper_mg;
 import static com.example.minesweeper_mg.BlockButton.getFlags_num;
 import static com.example.minesweeper_mg.BlockButton.getBlocks_num;
 import static com.example.minesweeper_mg.BlockButton.getMines_num;
+import static com.example.minesweeper_mg.BlockButton.setFlags_num;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TableLayout table;
     private  TextView blocks_num;
+    private TextView flags_num;
     private TextView all_mines_num;
     private BlockButton[][] buttons;
     private long startTime; // 실행 시간
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         all_mines_num = (TextView)findViewById(R.id.mine_num_text);
         all_mines_num.setText("Mines : " + getMines_num());
 
+        flags_num = (TextView)findViewById(R.id.flags_num);
 
         // 테이블 레이아웃 9x9
         table = (TableLayout) findViewById(R.id.tableLayout);
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         ((BlockButton) view).checkBlock();
-//                        blocks_num.setText("Blocks : "+ getBlocks_num());
+                        flags_num.setText("Flags : " + getFlags_num()); // Block 클릭 시 Flag 개수 BlockButon.java에서 가져오기
                     }
                 });
             }
@@ -131,8 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     blocks_num.setText("Blocks : "+ getBlocks_num());
                 } else {
                     flagSelectedBlock();
-                    TextView textView = (TextView) findViewById(R.id.flags_num);
-                    textView.setText("Flags : " + getFlags_num()); // Block 클릭 시 Flag 개수 BlockButon.java에서 가져오기
+                    flags_num.setText("Flags : " + getFlags_num()); // Block 클릭 시 Flag 개수 BlockButon.java에서 가져오기
                 }
             }
         });
@@ -158,14 +160,12 @@ public class MainActivity extends AppCompatActivity {
     private void calculateMineCounts(BlockButton[][ ] buttons) {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                // If the current cell has a mine, set mine count to -1
                 int[][] mineCounts = new int[9][9];
                 if (buttons[row][col].isMine()) {
                     mineCounts[row][col] = -1;
                     buttons[row][col].setNeighborMines(mineCounts[row][col]);
                     continue;
                 }
-                // Count mines in the neighboring cells
                 int count = 0;
                 for (int i = row - 1; i <= row + 1; i++) {
                     for (int j = col - 1; j <= col + 1; j++) {
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     if (blockView instanceof BlockButton) {
                         BlockButton selectedBlock = (BlockButton) blockView;
                         if (selectedBlock.blockChecked()) {
-                            selectedBlock.toggleFlag(); // BlockButton.java -> toggleFlag()
+                            selectedBlock.toggleFlag();
                             if(selectedBlock.isMine()){
                                 selectedBlock.calculate_mines(); // Flag 선택한 블럭이 Mine일 때 Mine 총 개수 줄이기
                                 all_mines_num.setText("Mines : " + getMines_num());
@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     // App 재시작 및 Mine 재배치
     private void restartApp() {
         Intent intent = getIntent();

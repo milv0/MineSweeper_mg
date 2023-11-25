@@ -40,8 +40,11 @@ public class BlockButton extends AppCompatButton {
     }
 
     public void checkBlock(){
-        flag = false;
 
+        if(flag){ // flag 중복 방지
+            flag = false;
+            flags_num--;
+        }
         if (!check) {
             check = true;
             setTextColor(Color.BLACK);
@@ -70,6 +73,11 @@ public class BlockButton extends AppCompatButton {
         flags_num++;
         setText("F");
         setTextColor(Color.RED);
+        check = false;
+    }
+    public void undoFlag(){
+        flags_num--;
+        flag = false;
         check = false;
     }
 
