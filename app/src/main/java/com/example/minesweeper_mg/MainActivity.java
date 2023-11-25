@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
+
         // 지뢰 세팅
         setMines(buttons);
         calculateMineCounts(buttons);
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         blocks_num.setText("Blocks : " + getBlocks_num()); // Blocks 총 개수
 
+        // Break / Flag Toggle 버튼
         ToggleButton break_button = (ToggleButton)findViewById(R.id.break_button);
         break_button.setOnClickListener(new View.OnClickListener() {
             @Override
