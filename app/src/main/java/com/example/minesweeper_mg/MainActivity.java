@@ -103,17 +103,20 @@ public class MainActivity extends AppCompatActivity {
         showAllMines.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (((ToggleButton) view).isChecked()) {
-                    for (int i = 0; i < 9; i++) {
-                        for (int j = 0; j < 9; j++) {
-                            buttons[i][j].performClick();
-                        }
-                    }
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            breakSelectedBlock();
-                        }
-                    }, 200);
+                    Toast.makeText(MainActivity.this, "Restart!", Toast.LENGTH_SHORT).show();
+                    restartApp();
+                    // game Over 시 답 보이게 해서 필요 없어짐..
+//                    for (int i = 0; i < 9; i++) {
+//                        for (int j = 0; j < 9; j++) {
+//                            buttons[i][j].performClick();
+//                        }
+//                    }
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            breakSelectedBlock();
+//                        }
+//                    }, 200);
                 } else {
                     Toast.makeText(MainActivity.this, "Restart!", Toast.LENGTH_SHORT).show();
                     restartApp();
@@ -182,6 +185,9 @@ public class MainActivity extends AppCompatActivity {
 
     // 선택한 블럭 Break
     private void breakSelectedBlock() {
+
+        boolean gameOver = false;
+
         for (int i = 0; i < table.getChildCount(); i++) {
             View rowView = table.getChildAt(i);
             if (rowView instanceof TableRow) {
@@ -193,13 +199,37 @@ public class MainActivity extends AppCompatActivity {
                         if (selectedBlock.blockChecked()) {
                             selectedBlock.breakBlock(); // BlockButton.java -> breakBlock()
                             if(selectedBlock.isMine()){
-                                Toast.makeText(this, "Game Over...", Toast.LENGTH_SHORT).show();
+                                gameOver = true;   // Mine 인 블럭 Break 할 때 game Over
+//                                Toast.makeText(this, "Game Over...", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
                 }
             }
         }
+        if (gameOver) {
+            // 게임이 종료되었을 때 모든 블럭 선택 후 열기
+            for (int i = 0; i < table.getChildCount(); i++) {
+                View rowView = table.getChildAt(i);
+                if (rowView instanceof TableRow) {
+                    TableRow tableRow = (TableRow) rowView;
+                    for (int j = 0; j < tableRow.getChildCount(); j++) {
+                        View blockView = tableRow.getChildAt(j);
+                        if (blockView instanceof BlockButton) {
+                            BlockButton selectedBlock = (BlockButton) blockView;
+                            selectedBlock.setCheck(true);  // 모든 블럭을 선택 상태로 변경
+                        }
+                    }
+                }
+            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    breakSelectedBlock();
+                }
+            }, 200);
+        }
+
     }
 
     // 선택한 블럭 Flag

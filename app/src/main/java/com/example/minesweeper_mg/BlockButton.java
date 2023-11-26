@@ -87,7 +87,6 @@ public class BlockButton extends AppCompatButton {
 
 
 
-
     // Getter
     public int getNeighborMines() {
         return neighborMines;
@@ -115,6 +114,8 @@ public class BlockButton extends AppCompatButton {
     public void setMine(boolean b) {
         mine = b;
     }
+
+    public void setCheck(boolean b) { check = b;}
 
     //
     public boolean blockChecked() {
