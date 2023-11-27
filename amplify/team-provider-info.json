@@ -11,5 +11,23 @@
       "StackId": "arn:aws:cloudformation:us-west-1:927103228741:stack/amplify-minesweeper-dev-142115/cbde4e00-8ce4-11ee-bbc1-06000c98f21d",
       "AmplifyAppId": "d29zpj3qg4yd9s"
     }
+  },
+  "androidapp": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-minesweeper-androidapp-155209-authRole",
+      "UnauthRoleArn": "arn:aws:iam::927103228741:role/amplify-minesweeper-androidapp-155209-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::927103228741:role/amplify-minesweeper-androidapp-155209-authRole",
+      "Region": "us-west-1",
+      "DeploymentBucketName": "amplify-minesweeper-androidapp-155209-deployment",
+      "UnauthRoleName": "amplify-minesweeper-androidapp-155209-unauthRole",
+      "StackName": "amplify-minesweeper-androidapp-155209",
+      "StackId": "arn:aws:cloudformation:us-west-1:927103228741:stack/amplify-minesweeper-androidapp-155209/7fa52380-8cf1-11ee-8f76-066c6f712ea7",
+      "AmplifyAppId": "d31j3tj3qylobx"
+    },
+    "categories": {
+      "auth": {
+        "minesweeper1eb540fe": {}
+      }
+    }
   }
 }
