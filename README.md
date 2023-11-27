@@ -1,4 +1,4 @@
-# MineSweeper_mg
+# MineSweeper_mg 
 Android Studio + AWS Amplify
 
 23/11/27 
